@@ -1,0 +1,31 @@
+@import "../../../colors";
+
+.navbar-wrap {
+    position: sticky;
+    top: 0;
+    display: flex;
+    padding-left: 30px;
+    padding-right: 40px;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.15);
+    z-index: 9;
+    background-color: white;
+    height: 60px;
+}
+.remedy-robot-logo-nav {
+    height: 33px;
+}
+
+.user-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: $remedy-black
+}
+.user-email {
+    font-size: 14px;
+    color: #909090;
+}

@@ -1,0 +1,15 @@
+
+@import '../../colors';
+
+.active-btn {
+    background-color: $remedy-black;
+    color: $white;
+    padding: 14px 16px;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+    display: inline-block;
+    border: none;
+    text-decoration: none;
+}
