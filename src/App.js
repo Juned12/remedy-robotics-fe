@@ -20,14 +20,12 @@ function App() {
             <Navbar />
             <Routes>
               <Route path={urlPaths.jobs} element={<LazySidenavbar section={<Jobs />} />} exact={true}/>
-              <Route  path="/login" element={<Navigate to={urlPaths.jobs}/>}/>
-              <Route path="*" element={<>Not Found</>} exact={true} />
+              <Route path="*" element={<Navigate to={urlPaths.jobs}/>} exact={true} />
             </Routes>
           </> :
           <Routes>
             <Route path={urlPaths.login} element={<LazyLogin />} />
-            <Route  path="/" element={<Navigate to={urlPaths.login}/>}/>
-            <Route path="*" element={<>Not Found</>} exact={true} />
+            <Route  path="*" element={<Navigate to={urlPaths.login}/>}/>
           </Routes>
         }
 

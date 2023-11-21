@@ -1,0 +1,14 @@
+@import '../../colors';
+
+.text-input-label {
+    font-size: 16px;
+    color: $remedy-dark-grey;
+    display: block;
+    font-weight: 600;
+}
+.default-textarea-wrap {
+    border-radius: 4px;
+    padding: 14px 12px 14px 12px;
+    line-height: 21px;
+    width: 100%;
+}

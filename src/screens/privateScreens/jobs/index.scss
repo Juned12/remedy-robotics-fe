@@ -21,13 +21,24 @@
     font-size: 15px;
     vertical-align: baseline;
 }
-.success {
-    background-color: rgba(212, 244, 226, 1) !important;
+.status-chip {
     width: fit-content;
     border-radius: 27px;
     padding-top: 5px;
     padding-left: 10px;
     padding-right: 10px;
     padding-bottom: 8px;
+}
+.in-progess {
+    background-color: rgba(255, 236, 217, 1);
+    color: rgba(176, 63, 64, 1);
+
+}
+.success {
+    background-color: rgba(212, 244, 226, 1);
     color: rgba(30, 149, 83, 1);
+}
+.failed {
+    background-color: rgba(251, 221, 221, 1);
+    color: rgba(176, 63, 64, 1);
 }
