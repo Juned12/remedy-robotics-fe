@@ -1,9 +1,11 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { remedyRoboticsLogo, roundAvtar } from "../../../assets/images";
 import "./index.scss"
 
 const Navbar = () => {
 
+    const userDetails = useSelector((state)=>state.userDetails?.details)
     return (
         <>
             <div className="navbar-wrap">
@@ -12,8 +14,8 @@ const Navbar = () => {
                 </div>
                 <div className="d-flex align-items-center">
                     <div className="me-3 text-end">
-                        <div className="user-name">Richard Maxwell</div>
-                        <div className="user-email">richard@gmail.com</div>
+                        <div className="user-name">{userDetails?.name}</div>
+                        <div className="user-email">{userDetails?.email}</div>
                     </div>
                     <div>
                         <img src={roundAvtar} alt="" />

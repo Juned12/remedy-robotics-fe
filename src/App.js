@@ -1,16 +1,16 @@
 import { Suspense, lazy } from 'react';
+import { useSelector } from 'react-redux';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
-import { getToken } from './utils/localStorage';
 import { urlPaths } from './constants/urlPath';
 import Navbar from './screens/privateScreens/navbar';
 import Jobs from './screens/privateScreens/jobs';
 import './App.scss';
 
 function App() {
-  const isLoggedIn = getToken()
+  const isLoggedIn = useSelector((state)=>state?.userDetails?.details?.isAuthenticated)
   const LazyLogin = lazy(()=> import("../src/screens/publicScreens/login"))
   const LazySidenavbar = lazy(() => import("../src/screens/privateScreens/sideNavbar"))
-
+  console.log("isLogged",isLoggedIn)
   return (
     <Suspense>
       <BrowserRouter>
@@ -28,7 +28,6 @@ function App() {
             <Route  path="*" element={<Navigate to={urlPaths.login}/>}/>
           </Routes>
         }
-
       </BrowserRouter>
     </Suspense>
   );

@@ -3,7 +3,9 @@ const ACCESS_TOKEN = "token";
 export const saveAuthTokens = (accessToken) => {
   try {
     localStorage.setItem(ACCESS_TOKEN, accessToken);
-  } catch (err) {}
+  } catch (err) {
+    console.log(err)
+  }
 };
 
 export const deleteAuthTokens = () => {

@@ -1,7 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { remedyRoboticsLogo } from "../../../assets/images";
 import { saveAuthTokens } from "../../../utils/localStorage";
+import { setUserDetails } from "../../../redux/userSlice";
 import { urlPaths } from "../../../constants/urlPath";
 import TextInput from "../../../components/textInput";
 import Button from "../../../components/button";
@@ -10,12 +12,18 @@ import "./index.scss"
 const Login = () => {
 
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
-    const onSubmit = (e) => {
+    const onSubmit = async (e) => {
         e.preventDefault()
         saveAuthTokens("somethinh")
-        navigate(urlPaths.login)
-        console.log("data",e.target[0].value)
+        dispatch(setUserDetails({
+            isAuthenticated: true,
+            name: "Juned Mansuri",
+            email:e.target[0].value
+        }))
+        navigate("/jobs")
+        console.log("data",e.target[0].value, urlPaths.jobs)
     }
 
     return (
