@@ -7,15 +7,16 @@ import Jobs from './screens/privateScreens/jobs';
 import './App.scss';
 
 function App() {
-  const isLoggedIn = useSelector((state)=>state?.userDetails?.details?.isAuthenticated)
+
+  const isLoggedIn = useSelector((state)=>state?.userLoginData?.details?.isAuthenticated)
   const LazyLogin = lazy(()=> import("../src/screens/publicScreens/login"))
   const LazySidenavbar = lazy(() => import("../src/screens/privateScreens/sideNavbar"))
-  console.log("isLogged",isLoggedIn)
+
   return (
     <Suspense>
       <BrowserRouter>
         {
-          isLoggedIn ?
+          (isLoggedIn) ?
           <>
             <Navbar />
             <Routes>

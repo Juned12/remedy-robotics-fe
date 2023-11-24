@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { signIn } from 'aws-amplify/auth';
 import { useDispatch } from "react-redux";
 import { remedyRoboticsLogo } from "../../../assets/images";
-import { saveAuthTokens } from "../../../utils/localStorage";
 import { setUserDetails } from "../../../redux/userSlice";
 import { urlPaths } from "../../../constants/urlPath";
 import TextInput from "../../../components/textInput";
@@ -10,20 +10,32 @@ import Button from "../../../components/button";
 import "./index.scss"
 
 const Login = () => {
-
+    const [error, setError] = useState(null)
+    const [apiCalled, setApiCalled] = useState(false)
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
-    const onSubmit = async (e) => {
+    const onSubmit = (e) => {
         e.preventDefault()
-        saveAuthTokens("somethinh")
-        dispatch(setUserDetails({
-            isAuthenticated: true,
-            name: "Juned Mansuri",
-            email:e.target[0].value
-        }))
-        navigate("/jobs")
-        console.log("data",e.target[0].value, urlPaths.jobs)
+        setApiCalled(true)
+        const username = e.target[0].value;
+        const password = e.target[1].value;
+        signIn({ username, password })
+        .then((res)=>{
+            if(res.isSignedIn) {
+                dispatch(setUserDetails({
+                    isAuthenticated: true,
+                    email: username
+                }))
+                navigate(urlPaths.jobs)
+            }
+        })
+        .catch((err)=>{
+            setError(err.message)
+        })
+        .finally(()=>{
+            setApiCalled(false)
+        })
     }
 
     return (
@@ -39,7 +51,7 @@ const Login = () => {
                         placeholder={"Enter Email Address"}
                         label={"Email Address"}
                         className={"w-100 mb-4"}
-                        type="email"
+                        type="text"
                         required={true}
                     />
                     <TextInput
@@ -55,10 +67,17 @@ const Login = () => {
                         Forgot Password?
                     </div>
                     <Button
-                        label={'Login'}
+                        label={apiCalled?"Loading...":'Login'}
                         className={"login-button-wrap"}
                         type="submit"
+                        isDisabled={apiCalled}
                     />
+                    {
+                        error &&
+                        <div className='alert alert-danger mt-2 text-center'>
+                            {error}
+                        </div>
+                    }
                 </form>
             </div>
         </div>

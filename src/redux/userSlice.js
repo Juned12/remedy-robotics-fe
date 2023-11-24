@@ -9,7 +9,6 @@ export const UserDetailsSlice = createSlice({
     },
     reducers: {
         setUserDetails: (state, action) => {
-            console.log("heree",action)
             state.details = action.payload
         },
         clearUserDetails: (state) => {

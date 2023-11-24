@@ -20,3 +20,11 @@
     color: black;
     border: 1px solid black;
 }
+.active-btn:disabled {
+    background-color: #f1f1f1;
+    border: 1px solid #f1f1f1;
+    color: rgba(214, 215, 217, 1);
+}
+.active-btn:hover {
+    box-shadow: 0 0 10px 0px rgba(0, 0, 0, 0.3) !important;
+}
