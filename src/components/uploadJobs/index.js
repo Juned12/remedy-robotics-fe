@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import {fetchAuthSession} from 'aws-amplify/auth'
+import { useSelector } from 'react-redux';
+import {fetchAuthSession} from 'aws-amplify/auth';
 import Lambda from 'aws-sdk/clients/lambda';
 import Modal from '../modal';
 import TextArea from '../textArea';
@@ -11,7 +12,7 @@ const UploadJobs = ({
     onSuccess,
     onClose
 }) => {
-
+    const userDetails = useSelector((state)=>state.userLoginData?.details)
     const [query, setQuery] = useState("");
     const [error, setError] = useState(null);
     const [apiCalled, setApiCalled] = useState(false)
@@ -33,8 +34,8 @@ const UploadJobs = ({
                 region: "us-west-2"
             });
             return lambda.invoke({
-                FunctionName: 'redbrick_data_upload',
-                Payload: JSON.stringify({ query: query }),
+                FunctionName: 'query-submision',
+                Payload: JSON.stringify({ username: userDetails.email, query: query }),
             },
             function(err, data) {
                 if (err) {
@@ -50,8 +51,9 @@ const UploadJobs = ({
                 }
             });
         })
-        .finally(()=>{
+        .catch(()=>{
             setApiCalled(false)
+            setError("Error from AWS");
         })
     }
 
