@@ -5,6 +5,7 @@ import Lambda from 'aws-sdk/clients/lambda';
 import Modal from '../modal';
 import TextArea from '../textArea';
 import Button from '../button';
+import TextInputDropdown from '../textInputDropdown';
 import "./index.scss"
 
 const UploadJobs = ({
@@ -12,8 +13,13 @@ const UploadJobs = ({
     onSuccess,
     onClose
 }) => {
+    const options = [
+        {label: "Red Brick", value: "Red Brick"},
+        {label: "Seven", value: "Seven"},
+    ]
     const userDetails = useSelector((state)=>state.userLoginData?.details)
     const [query, setQuery] = useState("");
+    const [targetPlatform, setTargetPlatform] = useState(options[0])
     const [error, setError] = useState(null);
     const [apiCalled, setApiCalled] = useState(false)
 
@@ -35,7 +41,7 @@ const UploadJobs = ({
             });
             return lambda.invoke({
                 FunctionName: 'query-submision',
-                Payload: JSON.stringify({ username: userDetails.email, query: query }),
+                Payload: JSON.stringify({ username: userDetails.email, query: query, targetPlatform: targetPlatform?.value }),
             },
             function(err, data) {
                 if (err) {
@@ -44,6 +50,7 @@ const UploadJobs = ({
                 } else {
                     const payload = JSON.parse(data.Payload)
                     if(payload.statusCode === 500) {
+                        setApiCalled(false)
                         setError(payload.body)
                     } else {
                         onSuccess()
@@ -65,7 +72,7 @@ const UploadJobs = ({
                 title="Upload"
                 className="upload-jobs-modal"
             >
-                <div className='mt-4'>
+                <div className='mt-3'>
                     <form onSubmit={onSubmit}>
                         <TextArea
                             onChange={(e)=>{
@@ -77,6 +84,17 @@ const UploadJobs = ({
                             id="query"
                             rows={6}
                             value={query}
+                            label={"Query"}
+                        />
+                        <TextInputDropdown
+                            options={options}
+                            selectedOption={targetPlatform}
+                            handleChange={(e)=>{
+                                setTargetPlatform(e)
+                            }}
+                            defaultValue={"Red Brick"}
+                            id={"targetDrop"}
+                            label={"Target Platform"}
                         />
                         {
                             error &&

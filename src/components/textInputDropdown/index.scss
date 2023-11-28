@@ -1,0 +1,10 @@
+@import '../../colors';
+
+.remedy-dropdown {
+    border-radius: 4px;
+    border: 1px solid rgb(118, 118, 118);
+}
+
+.remedy-dropdown::placeholder {
+    color: $placeholder-grey;
+}

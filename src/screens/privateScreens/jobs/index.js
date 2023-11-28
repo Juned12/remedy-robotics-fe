@@ -1,26 +1,44 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { fetchAuthSession } from "aws-amplify/auth";
-import { Tooltip as ReactTooltip } from "react-tooltip";
 import { darkEyeIcon } from "../../../assets/images";
 import ReactPaginate from "react-paginate";
 import classNames from "classnames";
 import Lambda from 'aws-sdk/clients/lambda';
 import Button from "../../../components/button";
 import UploadJobs from "../../../components/uploadJobs";
+import Modal from "../../../components/modal";
 import "./index.scss"
 
 const Jobs = () => {
+    const limit = 5
     const userDetails = useSelector((state)=>state.userLoginData?.details)
     const [uploadJobs, setUploadJobs] = useState(false)
     const [dataRecords, setDataRecords] = useState([])
     const [offset, setOffset] = useState(0);
     const [totalCount, setTotalCount] = useState(0);
     const [fetchingData, setFetchingData] = useState(true)
+    const [jobDetailsModal, setJobDetailsModal] = useState({})
 
     useEffect(() => {
         getDataRecords(offset);
     }, [offset]);
+
+    useEffect(()=>{
+        if(dataRecords.length > 0) {
+            checkIfInprogress(dataRecords)
+        }
+    },[dataRecords]) 
+
+    const checkIfInprogress = (data) => {
+        const inprogressData = data.find((rec)=> rec["Status"] === "In process")
+        const refreshTimeout = setTimeout(()=>{
+            getDataRecords(offset)
+        },5000)
+        if(!inprogressData) {
+          clearTimeout(refreshTimeout)  
+        }
+    }
 
     const getDataRecords = (offset) => {
         fetchAuthSession()
@@ -31,7 +49,7 @@ const Jobs = () => {
             });
             return lambda.invoke({
                 FunctionName: 'user-login',
-                Payload: JSON.stringify({ username: userDetails.email, limit: 10, offset: offset }),
+                Payload: JSON.stringify({ username: userDetails.email, limit: limit, offset: offset }),
             },
             function(err, data) {
                 if (err) console.log(err, err.stack);
@@ -45,7 +63,7 @@ const Jobs = () => {
                 setFetchingData(false)
             });
         })
-        .catch((err)=>{
+        .catch(()=>{
             setFetchingData(false)
         })
     }
@@ -56,7 +74,7 @@ const Jobs = () => {
     }
 
     const handlePageClick = (event) => {
-        const newOffset = event.selected * 1;
+        const newOffset = (event.selected * limit);
         if (newOffset < 0 || newOffset >= totalCount) {
           return;
         }
@@ -70,12 +88,24 @@ const Jobs = () => {
     }
     return (
         <>
+            <Modal
+                isOpen={jobDetailsModal?.isOpen}
+                onClose={()=>setJobDetailsModal({})}
+                title={jobDetailsModal?.type}
+                className="ps-4 pe-4"
+            >
+                <div className="mt-4 mb-4 modal-data-font">
+                    {jobDetailsModal?.data}
+                </div>
+            </Modal>
             <UploadJobs
                 isOpen={uploadJobs}
                 onClose={()=>setUploadJobs(false)}
                 onSuccess={()=>{onUploadSuccess()}}
             />
+            
             <div className="jobs-wrap">
+            <div>
                 <div className="jobs-head-wrap mb-5">
                     <div className="job-text">
                         Jobs
@@ -108,17 +138,42 @@ const Jobs = () => {
                                                 <td>{getDateAndTime(data["Date & Time"])}</td>
                                                 <td>{data["# Of Files"]}</td>
                                                 <td>
-                                                    <div className={classNames("status-chip", data.status) }>
-                                                        {data["Status"]}
+                                                    <div className="d-flex align-items-center">
+                                                        <div className={classNames("status-chip", data["Status"].replace(/\s/g,'')) }>
+                                                            {data["Status"]}
+                                                        </div>
+                                                        {
+                                                            data["Status"] === "Failed" &&
+                                                            <span 
+                                                                className="fa fa-exclamation-circle ms-2 cursor-pointer" 
+                                                                onClick={()=>{
+                                                                    setJobDetailsModal({
+                                                                        isOpen: true,
+                                                                        type: "Reason",
+                                                                        data: data["Reason"]
+                                                                    })
+                                                                }}
+                                                                style={{
+                                                                    color: "#EA5455"
+                                                                }}
+                                                            />
+                                                        }
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <img src={darkEyeIcon} alt="" data-tooltip-id={"add"+data["ID"]}/>
-                                                    <ReactTooltip
-                                                        id={"add"+data["ID"]}
-                                                        place="bottom"
-                                                        content={data["Query"]}
-                                                    /></td>
+                                                    <img 
+                                                        src={darkEyeIcon} 
+                                                        alt="" 
+                                                        className="cursor-pointer"
+                                                        onClick={()=>{
+                                                            setJobDetailsModal({
+                                                                isOpen: true,
+                                                                type: "Query",
+                                                                data: data["Query"]
+                                                            })
+                                                        }}
+                                                    />
+                                                </td>
                                                 <td>{data["Target Platform"]}</td>
                                             </tr>
                                         )
@@ -141,14 +196,14 @@ const Jobs = () => {
                     }
                 </div>
                 {
-                    totalCount > 15 && 
+                    totalCount > limit && 
                     <ReactPaginate
                         containerClassName="pagination align-items-center justify-content-end mt-5"
                         activeClassName="active"
                         pageClassName="page-item"
                         onPageChange={handlePageClick}
                         breakLabel="..."
-                        pageCount={totalCount / dataRecords.length}
+                        pageCount={totalCount / limit}
                         previousLabel={
                             <>
                                 <Button
@@ -166,6 +221,8 @@ const Jobs = () => {
                     />
                 }
             </div>
+            </div>
+
         </>
     )
 }

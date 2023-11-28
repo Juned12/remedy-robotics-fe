@@ -6,7 +6,10 @@ import { setUserDetails } from "../../../redux/userSlice";
 import { deleteAuthTokens } from "../../../utils/localStorage";
 import "./index.scss"
 
-const Navbar = () => {
+const Navbar = ({
+    setSideBarIsOpen,
+    sideBarIsOpen
+}) => {
 
     const dispatch = useDispatch()
 
@@ -24,21 +27,22 @@ const Navbar = () => {
     return (
         <>
             <div className="navbar-wrap">
+                
                 <div>
+                    <div className="fa-solid fa-bars me-3 cursor-pointer" onClick={()=>setSideBarIsOpen(!sideBarIsOpen)}></div>
                     <img src={remedyRoboticsLogo} alt="" className="remedy-robot-logo-nav"/>
                 </div>
                 <div className="d-flex align-items-center">
-                    <div className="logout-text me-3" onClick={()=>handleSignOut()}>
-                        Logout
-                    </div>
                     <div className="d-flex align-items-center">
                         <div className="me-3 text-end">
-                            <div className="user-name">{userDetails?.name}</div>
                             <div className="user-email">{userDetails?.email}</div>
                         </div>
                         <div>
                             <img src={roundAvtar} alt="" />
                         </div>
+                    </div>
+                    <div className="logout-text ms-3" onClick={()=>handleSignOut()}>
+                        Logout
                     </div>
                 </div>
             </div>
