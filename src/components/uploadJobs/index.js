@@ -40,7 +40,7 @@ const UploadJobs = ({
                 region: "us-west-2"
             });
             return lambda.invoke({
-                FunctionName: 'query-submision',
+                FunctionName: 'UI-query-submision',
                 Payload: JSON.stringify({ username: userDetails.email, query: query, targetPlatform: targetPlatform?.value }),
             },
             function(err, data) {

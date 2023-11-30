@@ -28,6 +28,8 @@ const Login = () => {
                     email: username
                 }))
                 navigate(urlPaths.jobs)
+            } else {
+                setError("Contact your AWS Administrator")
             }
         })
         .catch((err)=>{
@@ -48,8 +50,8 @@ const Login = () => {
                     <TextInput
                         name="email"
                         id="email"
-                        placeholder={"Enter Email Address"}
-                        label={"Email Address"}
+                        placeholder={"Enter Username"}
+                        label={"Username"}
                         className={"w-100 mb-4"}
                         type="text"
                         required={true}

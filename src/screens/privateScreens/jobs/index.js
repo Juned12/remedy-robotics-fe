@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { fetchAuthSession } from "aws-amplify/auth";
 import { darkEyeIcon } from "../../../assets/images";
@@ -19,28 +19,36 @@ const Jobs = () => {
     const [totalCount, setTotalCount] = useState(0);
     const [fetchingData, setFetchingData] = useState(true)
     const [jobDetailsModal, setJobDetailsModal] = useState({})
-
+    const offsetRef = useRef();
+    
     useEffect(() => {
-        getDataRecords(offset);
+        offsetRef.current = offset
+        getDataRecords(offset, true);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [offset]);
 
     useEffect(()=>{
         if(dataRecords.length > 0) {
             checkIfInprogress(dataRecords)
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[dataRecords]) 
 
     const checkIfInprogress = (data) => {
         const inprogressData = data.find((rec)=> rec["Status"] === "In process")
         const refreshTimeout = setTimeout(()=>{
-            getDataRecords(offset)
+            getDataRecords(offsetRef.current)
         },5000)
         if(!inprogressData) {
           clearTimeout(refreshTimeout)  
         }
     }
 
-    const getDataRecords = (offset) => {
+    const getDataRecords = (offsetParam=offset, setFetching) => {
+        if(setFetching) {
+            setFetchingData(true)
+        }
+        console.log("offsetParam",offsetParam)
         fetchAuthSession()
         .then(credentials => {
             const lambda = new Lambda({
@@ -48,8 +56,8 @@ const Jobs = () => {
                 region: "us-west-2"
             });
             return lambda.invoke({
-                FunctionName: 'user-login',
-                Payload: JSON.stringify({ username: userDetails.email, limit: limit, offset: offset }),
+                FunctionName: 'UI-user-login',
+                Payload: JSON.stringify({ username: userDetails.email, limit: limit, offset: offsetParam }),
             },
             function(err, data) {
                 if (err) console.log(err, err.stack);
@@ -122,6 +130,7 @@ const Jobs = () => {
                                 <th scope="col">ID</th>
                                 <th scope="col">Date & Time</th>
                                 <th scope="col"># of Files</th>
+                                <th scope="col"># of Folders</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">Query</th>
                                 <th scope="col">Target Platform</th>
@@ -137,13 +146,14 @@ const Jobs = () => {
                                                 <td>{data["ID"]}</td>
                                                 <td>{getDateAndTime(data["Date & Time"])}</td>
                                                 <td>{data["# Of Files"]}</td>
+                                                <td>{data["# Of Folders"]}</td>
                                                 <td>
                                                     <div className="d-flex align-items-center">
-                                                        <div className={classNames("status-chip", data["Status"].replace(/\s/g,'')) }>
+                                                        <div className={classNames("status-chip", data["Status"]?.replace(/\s/g,'')) }>
                                                             {data["Status"]}
                                                         </div>
                                                         {
-                                                            data["Status"] === "Failed" &&
+                                                            data["Reason"] &&
                                                             <span 
                                                                 className="fa fa-exclamation-circle ms-2 cursor-pointer" 
                                                                 onClick={()=>{
