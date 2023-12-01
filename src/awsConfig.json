@@ -1,0 +1,8 @@
+{
+  "aws_project_region": "us-west-2",
+  "aws_cognito_identity_pool_id": "us-west-2:4afdb4cf-325a-4484-9cd6-8cd6642cbb9a",
+  "aws_cognito_region": "us-west-2",
+  "aws_user_pools_id": "us-west-2_D5rbRrW6H",
+  "aws_user_pools_web_client_id":"501guap24c4lpcq71dv7q8k0d8",
+  "oauth": {}
+}

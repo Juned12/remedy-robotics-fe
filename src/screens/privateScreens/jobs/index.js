@@ -48,7 +48,6 @@ const Jobs = () => {
         if(setFetching) {
             setFetchingData(true)
         }
-        console.log("offsetParam",offsetParam)
         fetchAuthSession()
         .then(credentials => {
             const lambda = new Lambda({

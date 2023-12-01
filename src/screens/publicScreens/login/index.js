@@ -65,12 +65,12 @@ const Login = () => {
                         type="password"
                         required={true}
                     />
-                    <div className="forgot-password-wrap mb-4 mt-2">
+                    {/* <div className="forgot-password-wrap mb-4 mt-2">
                         Forgot Password?
-                    </div>
+                    </div> */}
                     <Button
                         label={apiCalled?"Loading...":'Login'}
-                        className={"login-button-wrap"}
+                        className={"login-button-wrap mt-2"}
                         type="submit"
                         isDisabled={apiCalled}
                     />
