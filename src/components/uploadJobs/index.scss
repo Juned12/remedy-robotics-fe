@@ -1,6 +1,9 @@
 .upload-jobs-modal {
-    min-height: 351px;
-    width: 452px;
+    min-height: 300px;
+    width: 900px;
+    max-width: 95%;
     border-radius: 20px;
     padding: 25px;
+    max-height: 90%;
+    overflow-y: auto;
 }

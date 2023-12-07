@@ -3,11 +3,11 @@ import { useSelector } from 'react-redux';
 import {fetchAuthSession} from 'aws-amplify/auth';
 import Lambda from 'aws-sdk/clients/lambda';
 import Modal from '../modal';
-import TextArea from '../textArea';
+import AddQuery from '../addQuery';
 import Button from '../button';
 import TextInputDropdown from '../textInputDropdown';
 import "./index.scss"
-
+  
 const UploadJobs = ({
     isOpen,
     onSuccess,
@@ -15,21 +15,51 @@ const UploadJobs = ({
 }) => {
     const options = [
         {label: "Red Brick", value: "Red Brick"},
-        {label: "Seven", value: "Seven"},
+        {label: "V7", value: "V7"},
     ]
+
+    const initialQuery = {
+        condition: "contains",
+        columnName: "",
+        dataType: "String",
+        value: "",
+        operator: "AND"
+    }
+    const [queryData, setQueryData] = useState([])
     const userDetails = useSelector((state)=>state.userLoginData?.details)
-    const [query, setQuery] = useState("");
     const [targetPlatform, setTargetPlatform] = useState(options[0])
     const [error, setError] = useState(null);
     const [apiCalled, setApiCalled] = useState(false)
 
     useEffect(()=>{
-        setQuery("")
+        setQueryData([initialQuery])
         setError(null)
         setApiCalled(false)
     },[isOpen])
 
     const onSubmit = (e) => {
+        const conditonArr = []
+        const columnArr = []
+        const dataTypeArr = []
+        const valueArr = []
+        const operatorArr = []
+        queryData.forEach((query, idx)=>{
+            conditonArr.push(query.condition)
+            columnArr.push(query.columnName)
+            dataTypeArr.push(query.dataType)
+            valueArr.push(query.value)
+            if(idx<queryData.length-1) {
+                operatorArr.push(query.operator)
+            }
+        })
+        const query = {
+            condition : conditonArr,
+            col_name : columnArr,
+            data_type : dataTypeArr,
+            col_value : valueArr,
+            operator : operatorArr
+        }
+        console.log("querty",query)
         setApiCalled(true)
         setError(null)
         e.preventDefault()
@@ -72,19 +102,12 @@ const UploadJobs = ({
                 title="Upload"
                 className="upload-jobs-modal"
             >
+                
                 <div className='mt-3'>
                     <form onSubmit={onSubmit}>
-                        <TextArea
-                            onChange={(e)=>{
-                                setError(null)
-                                setQuery(e.target.value)
-                            }}
-                            required={true}
-                            name="query"
-                            id="query"
-                            rows={6}
-                            value={query}
-                            label={"Query"}
+                        <AddQuery
+                            queryData={queryData}
+                            setQueryData={q => setQueryData(q)}
                         />
                         <TextInputDropdown
                             options={options}
@@ -95,10 +118,11 @@ const UploadJobs = ({
                             defaultValue={"Red Brick"}
                             id={"targetDrop"}
                             label={"Target Platform"}
+                            className={"attr-drop"}
                         />
                         {
                             error &&
-                            <div className='alert alert-danger mt-2 text-center'>
+                            <div className='alert alert-danger mt-3 text-center'>
                                 {error}
                             </div>
                         }
@@ -107,7 +131,7 @@ const UploadJobs = ({
                                 label={"Clear"}
                                 className={"transparent-btn pt-2 pb-2 ps-3 pe-3 me-3"}
                                 onClick={()=>{
-                                    setQuery("")
+                                    setQueryData([initialQuery])
                                     setError(null)
                                 }}
                                 type={"button"}

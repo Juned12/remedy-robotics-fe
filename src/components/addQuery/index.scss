@@ -1,0 +1,39 @@
+@import '../../colors';
+
+.queryBuilder {
+    min-width: 420px;
+  }
+.rule {
+    flex-wrap: wrap;
+}
+.ruleGroup-addRule, .ruleGroup-addGroup, .rule-remove, .ruleGroup-remove {
+    background-color: $remedy-black;
+    color: $white;
+    padding: 4px 10px 6px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    display: inline-block;
+    border: none;
+    text-decoration: none;
+    border: 1px solid black;
+    height: fit-content;
+}
+.ruleGroup-combinators, .rule-fields, .rule-operators, .rule-value {
+    border-radius: 4px;
+    border: 1px solid $remedy-black;
+    padding-left: 10px;
+    padding-right: 10px;
+    height: 36px;
+    line-height: 21px;
+}
+.attr-drop {
+    width: 175px;
+}
+.type-drop {
+    width: 140px;
+}
+.value-input {
+    height: 40px;
+}

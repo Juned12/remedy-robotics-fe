@@ -8,8 +8,6 @@
     box-shadow: 2px 0px 12px 0px rgba(0, 0, 0, 0.15);
 }
 .sidenav-action-item {
-    background-color: $remedy-black;
-    color: white;
     padding-top: 10px;
     padding-bottom: 10px;
     padding-left: 20px;
@@ -18,6 +16,15 @@
     align-items: center;
     gap: 5px;
     cursor: pointer;
+}
+.active-action-item {
+    background-color: $remedy-black;
+    color: white;
+
+}
+.inactive-action-item {
+    border: 1px solid $remedy-black;
+    color: black;
 }
 .section-wrap {
     margin-top: 40px;
