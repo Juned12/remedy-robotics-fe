@@ -35,6 +35,7 @@ const UploadJobs = ({
         setQueryData([initialQuery])
         setError(null)
         setApiCalled(false)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[isOpen])
 
     const onSubmit = (e) => {

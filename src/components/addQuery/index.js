@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { columnName } from "../../constants/columnName";
 import TextInput from "../textInput";
 import Button from "../button";
@@ -17,12 +17,12 @@ const stringConditionOption = [
 ]
 
 const numberConditionOption = [
-    { label: "equal to", value: "=" },
-    { label: "greater than", value: ">" },
-    { label: "less than", value: "<" },
-    { label: "greater than equal to", value: ">=" },
-    { label: "less than equal to", value: "<=" },
-    { label: "not equal to", value: "<>" },
+    { label: "Equal to", value: "equal to" },
+    { label: "Greater than", value: "greater than" },
+    { label: "Less than", value: "less than" },
+    { label: "Greater than Equal to", value: "greater than equal to" },
+    { label: "Less than Equal to", value: "less than equal to" },
+    { label: "Not Equal to", value: "not equal to" },
 ]
 
 const operatorOption = [
