@@ -133,6 +133,7 @@ const Jobs = () => {
                                 <th scope="col">Status</th>
                                 <th scope="col">Query</th>
                                 <th scope="col">Target Platform</th>
+                                <th scope="col">Project Name</th>
                             </tr>
                         </thead>
                         {
@@ -184,6 +185,7 @@ const Jobs = () => {
                                                     />
                                                 </td>
                                                 <td>{data["Target Platform"]}</td>
+                                                <td>{data["Project Name"]}</td>
                                             </tr>
                                         )
                                     })
