@@ -36,7 +36,7 @@ const TextInputDropdown = ({
           <input 
             className="input-required" 
             type="text" 
-            value={selectedOption && JSON.stringify(selectedOption)} 
+            value={selectedOption ? JSON.stringify(selectedOption) : ""} 
             tabIndex={-1}
             autoComplete="off" 
             required={required}

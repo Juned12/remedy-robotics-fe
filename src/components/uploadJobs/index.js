@@ -154,6 +154,7 @@ const UploadJobs = ({
                             selectedOption={targetPlatform}
                             handleChange={(e)=>{
                                 setTargetPlatform(e)
+                                setProject(null)
                             }}
                             defaultValue={"Red Brick"}
                             id={"targetDrop"}
