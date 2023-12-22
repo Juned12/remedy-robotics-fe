@@ -19,6 +19,8 @@ const Jobs = () => {
     const [totalCount, setTotalCount] = useState(0);
     const [fetchingData, setFetchingData] = useState(true)
     const [jobDetailsModal, setJobDetailsModal] = useState({})
+    const [activeJobCount, setActiveJobCount] = useState(0);
+    const [showJobsInprocessDetails, setShowJobsInprocessDetails] = useState(false)
     const offsetRef = useRef();
     
     useEffect(() => {
@@ -28,16 +30,21 @@ const Jobs = () => {
     }, [offset]);
 
     useEffect(()=>{
-        if(dataRecords.length > 0) {
+        if(dataRecords?.length > 0) {
             checkIfInprogress(dataRecords)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[dataRecords]) 
+    },[dataRecords])
+
+    useEffect(()=>{
+        getQueryCounts()
+    },[])
 
     const checkIfInprogress = (data) => {
         const inprogressData = data.find((rec)=> rec["Status"] === "In process")
         const refreshTimeout = setTimeout(()=>{
             getDataRecords(offsetRef.current)
+            getQueryCounts()
         },5000)
         if(!inprogressData) {
           clearTimeout(refreshTimeout)  
@@ -72,6 +79,29 @@ const Jobs = () => {
         })
         .catch(()=>{
             setFetchingData(false)
+        })
+    }
+
+    const getQueryCounts = () => {
+       
+        fetchAuthSession()
+        .then(credentials => {
+            const lambda = new Lambda({
+                credentials: credentials.credentials,
+                region: "us-west-2"
+            });
+            return lambda.invoke({
+                FunctionName: 'UI-files-upload-count',
+            },
+            function(err, data) {
+                if (err) console.log(err, err.stack);
+                else {
+                    if(data.Payload) {
+                        const res = JSON.parse(data.Payload)
+                        setActiveJobCount(res.body)
+                    }
+                };
+            });
         })
     }
 
@@ -110,17 +140,51 @@ const Jobs = () => {
                 onClose={()=>setUploadJobs(false)}
                 onSuccess={()=>{onUploadSuccess()}}
             />
-            
+            <Modal
+                isOpen={showJobsInprocessDetails}
+                onClose={()=>setShowJobsInprocessDetails(false)}
+                title={"Jobs in Queue"}
+                className="ps-4 pe-4"
+            >
+                <div className="mt-4 mb-4 modal-data-font">
+                    <div className="queue-text-data">
+                        Jobs in Queue: {activeJobCount.message_available}
+                    </div>
+                    <div className="queue-text-data">
+                        Jobs under Processing: {activeJobCount.message_in_flight}
+                    </div>
+                    <div className="queue-text-data">
+                        Total Jobs in Queue: {activeJobCount.total_sum}
+                    </div>
+                </div>
+            </Modal>
             <div className="jobs-wrap">
             <div>
                 <div className="jobs-head-wrap mb-5">
                     <div className="job-text">
                         Jobs
                     </div>
+                    <div className="d-flex align-items-center">
+                        <div className="me-4 queue-text">
+                        Files in Queue : 
+                            <span className="bold-text ms-1">
+                                 {activeJobCount?.total_sum}
+                            </span>
+                            {
+                                activeJobCount?.total_sum > 0 &&
+                                <span 
+                                    className="fa fa-exclamation-circle ms-2 cursor-pointer" 
+                                    onClick={()=>{
+                                        setShowJobsInprocessDetails(true)
+                                    }}
+                                />
+                            }
+                        </div>
                     <Button
-                        label={"Upload"}
+                        label={"Add Query"}
                         onClick={()=>setUploadJobs(true)}
                     />
+                    </div>
                 </div>
                 <div>
                     <table className="table">

@@ -37,7 +37,6 @@ const AddQuery = ({
 
 
     const removeQuery = (idx) => {
-        console.log("idx",idx)
         setQueryData(queryData => queryData.filter((q, i) => i !== idx));
     }
 
@@ -123,14 +122,15 @@ const AddQuery = ({
                             <TextInput
                                 label={"Value"}
                                 onChange={(e)=>{
-                                    handleChange(e.target.value, "value", idx)
+                                    console.log("e.target.value",e.target.value.trim().length)
+                                    handleChange(e.target.value.trim(), "value", idx)
                                 }}
                                 name={`${idx}val`}
                                 id={`${idx}val`}
                                 placeholder={"Enter Attribute Value"}
                                 required={true}
                                 className={"value-input"}
-                                value={query.value}
+                                value={query.value || null}
                                 type={
                                     query.dataType === "String" ?
                                     "text" :

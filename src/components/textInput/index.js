@@ -27,6 +27,7 @@ const TextInput = ({
                 name={name}
                 id={id}
                 required={required}
+                pattern={required}
             />
             {
                 type === "password" &&
